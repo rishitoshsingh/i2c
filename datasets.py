@@ -29,7 +29,7 @@ class FlickrDataset(Dataset):
             img = self.image_processor(images=img, return_tensors="pt")
         caption = self.flickr_captions_df.iloc[index, 1].strip()
         if self.tokenizer:
-            caption = self.tokenizer(caption, return_tensors="pt", max_length=128, padding="max_length", truncation=True)
+            caption = self.tokenizer(caption, return_tensors="pt", max_length=20, padding="max_length", truncation=True)
         
         return {
             "pixel_values": img.pixel_values.squeeze(0),

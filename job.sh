@@ -10,8 +10,8 @@
 #SBATCH --mem=32G
 #SBATCH --mail-type=ALL # Send an e-mail when a job starts, stops, or fails
 #SBATCH --mail-user=rksing18@asu.edu
-#SBATCH --output=/home/rksing18/mmdetection_forVinDR/output_multi.out
-#SBATCH --error=/home/rksing18/mmdetection_forVinDR/error_multi.err
+#SBATCH --output=/home/rksing18/i2c/30k/output_multi.out
+#SBATCH --error=/home/rksing18/i2c/30k/error_multi.err
 
 source activate i2c
 which pip
@@ -31,8 +31,8 @@ python main.py \
     --per_device_eval_batch_size 32 \
     --dataloader_num_workers 32 \
     --num_train_epochs 20 \
-    --logging_steps 1 \
-    --save_steps 1 \
+    --logging_steps 100 \
+    --save_steps 50 \
     --save_total_limit 2 \
-    --gradient_accumulation_steps 1 \
+    --gradient_accumulation_steps 4 \
     --weight_decay 0.01
