@@ -184,5 +184,8 @@ def train(args):
 
 if __name__ == "__main__":
     args = parse_args()
+    global device
+    device = get_device(args.device)
+    print(device)
     print(args)
     train(args)
