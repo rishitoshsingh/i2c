@@ -46,9 +46,8 @@ def get_device(device_type):
     if device_type == "gpu" and torch.cuda.is_available():
         return torch.device("cuda")
     else:
-        return torch.device(device_type)
-
-device = get_device("gpu")
+        return torch.device("cpu")
+    
 
 def get_model(args):
     # Load pre-trained encoder and decoder models
@@ -174,7 +173,7 @@ def train(args):
         data_collator=default_data_collator,  # You can define your own data collator if needed
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
-        compute_metrics=compute_bleu,  # You can define your own evaluation metrics function if needed
+        compute_metrics=None,  # You can define your own evaluation metrics function if needed
     )
 
     # Train the model
