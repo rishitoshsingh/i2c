@@ -5,12 +5,12 @@ import os
 from PIL import Image
 
 
-class Flickr30kDataset(Dataset):
+class FlickrDataset(Dataset):
     def __init__(self, root_dir, split, image_processor=None, tokenizer=None):
         self.root_dir = root_dir
         self.split = split
         self.flickr_captions_df = pd.read_csv(
-            os.path.join(root_dir, f"flickr30k-{split}.csv")
+            os.path.join(root_dir, f"flickr-{split}.csv")
         )
         self.image_processor = image_processor
         self.tokenizer = tokenizer
@@ -21,7 +21,7 @@ class Flickr30kDataset(Dataset):
     def __getitem__(self, index):
         img = Image.open(
             os.path.join(
-                self.root_dir, "flickr30k-images",
+                self.root_dir, "images",
                 f"{self.flickr_captions_df.iloc[index, 0]}.jpg",
             )
         )

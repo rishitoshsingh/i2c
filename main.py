@@ -118,9 +118,9 @@ def get_datasets(args):
     tokenizer = get_tokenizer(args)
     tokenizer = update_tokenizer(tokenizer, args)
 
-    train_dataset = datasets.Flickr30kDataset(args.data_dir, split="train",
+    train_dataset = datasets.FlickrDataset(args.data_dir, split="train",
                                           image_processor=image_processor, tokenizer=tokenizer)
-    val_dataset = datasets.Flickr30kDataset(args.data_dir, split="val",
+    val_dataset = datasets.FlickrDataset(args.data_dir, split="val",
                                         image_processor=image_processor, tokenizer=tokenizer)
     return train_dataset, val_dataset
 
