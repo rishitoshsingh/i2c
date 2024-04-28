@@ -1,0 +1,7 @@
+/var/spool/slurmd/job15507341/slurm_script: line 18: cd: i2c: No such file or directory
+Traceback (most recent call last):
+  File "main.py", line 188, in <module>
+    args = parse_args()
+  File "main.py", line 32, in parse_args
+    parser.add_argument('--resume', action=argparse.BooleanOptionalAction)
+AttributeError: module 'argparse' has no attribute 'BooleanOptionalAction'

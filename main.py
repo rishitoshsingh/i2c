@@ -29,6 +29,7 @@ def parse_args():
     parser.add_argument("--save_total_limit", type=int, default=2, help="Limit the total amount of checkpoints")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=1, help="Number of updates steps to accumulate before performing a backward/update pass")
     parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay to apply")
+    parser.add_argument('--resume', action=argparse.BooleanOptionalAction)
 
 
     args = parser.parse_args()
@@ -177,7 +178,10 @@ def train(args):
     )
 
     # Train the model
-    trainer.train(resume_from_checkpoint=True)
+    if args.resume:
+        trainer.train(resume_from_checkpoint=True)
+    else:
+        trainer.train()
     trainer.save_model()
 
 if __name__ == "__main__":
