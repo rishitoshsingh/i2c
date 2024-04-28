@@ -2,7 +2,7 @@
 
 #SBATCH -N 1            # number of nodes
 #SBATCH -c 16           # number of cores 
-#SBATCH -t 0-04:00:00   # time in d-hh:mm:ss
+#SBATCH -t 0-00:20:00   # time in d-hh:mm:ss
 #SBATCH -p htc      # partition 
 #SBATCH -q public       # QOS
 #SBATCH --gres=gpu:a30:1
@@ -30,7 +30,7 @@ python main.py \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 16 \
     --dataloader_num_workers 16 \
-    --num_train_epochs 10 \
+    --num_train_epochs 1 \
     --logging_steps 50 \
     --save_steps 50 \
     --save_total_limit 2 \

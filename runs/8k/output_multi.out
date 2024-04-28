@@ -1,1 +1,13 @@
 /home/rksing18/.conda/envs/i2c/bin/pip
+cuda
+Namespace(data_dir='/scratch/rksing18/datasets/Flickr8', dataloader_num_workers=16, decoder='openai-community/gpt2', device='gpu', encoder='facebook/dinov2-small', experiment_name='8k-10', experiment_path='/scratch/rksing18/i2c/Model-Runs/dinov2-small@gpt2/8k-10', gradient_accumulation_steps=4, log_directory='/scratch/rksing18/i2c/Model-Runs/dinov2-small@gpt2/8k-10/logs', logging_steps=50, lr=0.001, lr_scheduler_gamma=0.1, lr_scheduler_step_size=10, num_train_epochs=1, output_directory='/scratch/rksing18/i2c/Model-Runs/', per_device_eval_batch_size=16, per_device_train_batch_size=16, save_steps=50, save_total_limit=2, weight_decay=0.01)
+True
+False
+tokenizer_bos_token_id: 50256
+tokenizer_pad_token_id: 50257
+tokenizer_eos_token_id: 50256
+decoder_start_token_id: 50256
+pad_token_id: 50257
+eos_token_id: 50256
+model.generation_config.eos_token_id 50256
+{'train_runtime': 0.0335, 'train_samples_per_second': 964694.392, 'train_steps_per_second': 15054.718, 'train_loss': 0.0, 'epoch': 9.99}

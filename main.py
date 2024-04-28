@@ -142,7 +142,7 @@ def train(args):
 
     # Define training arguments
     training_args = Seq2SeqTrainingArguments(
-        output_dir=args.output_directory,
+        output_dir=args.experiment_path,
         do_train=True,
         do_eval=True,
         evaluation_strategy="steps",
@@ -177,7 +177,8 @@ def train(args):
     )
 
     # Train the model
-    trainer.train()
+    trainer.train(resume_from_checkpoint=True)
+    trainer.save_model()
 
 if __name__ == "__main__":
     args = parse_args()

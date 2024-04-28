@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 import pandas as pd
 import os
 from PIL import Image
-
+from torchvision.transforms.functional import pil_to_tensor
 
 class FlickrDataset(Dataset):
     def __init__(self, root_dir, split, image_processor=None, tokenizer=None):
@@ -25,14 +25,23 @@ class FlickrDataset(Dataset):
                 f"{self.flickr_captions_df.iloc[index, 0]}.jpg",
             )
         )
+        if self.split == "test":
+            org_img = pil_to_tensor(img).unsqueeze(0)
         if self.image_processor:
             img = self.image_processor(images=img, return_tensors="pt")
         caption = self.flickr_captions_df.iloc[index, 1].strip()
         if self.tokenizer:
             caption = self.tokenizer(caption, return_tensors="pt", max_length=20, padding="max_length", truncation=True)
         
+        if self.split == "test":
+            return {
+                "pixel_values": img.pixel_values.squeeze(0),
+                "labels": caption.input_ids.squeeze(0) if self.tokenizer else caption,
+                "decoder_attention_mask": caption.attention_mask.squeeze(0) if self.tokenizer else None,
+                "org_img": org_img,
+            }
         return {
-            "pixel_values": img.pixel_values.squeeze(0),
+            "pixel_values": img.pixel_values.squeeze(0) if self.image_processor else img,
             "labels": caption.input_ids.squeeze(0) if self.tokenizer else caption,
             "decoder_attention_mask": caption.attention_mask.squeeze(0) if self.tokenizer else None,
             }
