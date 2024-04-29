@@ -1,5 +1,5 @@
 import argparse
-import datasets
+import my_datasets
 import os
 import torch
 
@@ -7,7 +7,8 @@ from transformers import AutoImageProcessor, AutoTokenizer, AutoModel, AutoConfi
 from transformers import VisionEncoderDecoderConfig, VisionEncoderDecoderModel
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from transformers import default_data_collator
-from nltk.translate.bleu_score import corpus_bleu
+import evaluate
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Script to parse command-line arguments")
@@ -29,8 +30,7 @@ def parse_args():
     parser.add_argument("--save_total_limit", type=int, default=2, help="Limit the total amount of checkpoints")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=1, help="Number of updates steps to accumulate before performing a backward/update pass")
     parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay to apply")
-    parser.add_argument('--resume', action=argparse.BooleanOptionalAction)
-
+    parser.add_argument('--resume', action='store_true', help="Resume training from the latest checkpoint")
 
     args = parser.parse_args()
 
@@ -118,19 +118,24 @@ def get_datasets(args):
     tokenizer = get_tokenizer(args)
     tokenizer = update_tokenizer(tokenizer, args)
 
-    train_dataset = datasets.FlickrDataset(args.data_dir, split="train",
+    train_dataset = my_datasets.FlickrDataset(args.data_dir, split="train",
                                           image_processor=image_processor, tokenizer=tokenizer)
-    val_dataset = datasets.FlickrDataset(args.data_dir, split="val",
+    val_dataset = my_datasets.FlickrDataset(args.data_dir, split="val",
                                         image_processor=image_processor, tokenizer=tokenizer)
     return train_dataset, val_dataset
 
 
-def compute_bleu(predictions, references):
-    pred_texts = [tokenizer.decode(pred, skip_special_tokens=True, clean_up_tokenization_spaces=True) for pred in predictions]
-    ref_texts = [[tokenizer.decode(ref, skip_special_tokens=True, clean_up_tokenization_spaces=True)] for ref in references]
-
-    bleu_score = corpus_bleu(ref_texts, pred_texts)
-    return bleu_score
+def compute_bleu(eval_preds):
+    predictions, references = eval_preds
+    bleu = evaluate.load("bleu")
+    print(predictions)
+    print(references)
+    predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+    references = tokenizer.batch_decode(references, skip_special_tokens=True)
+    print(predictions)
+    print(references)
+    results = bleu.compute(predictions=predictions, references=references)
+    return results
 
 
 def train(args):
@@ -152,16 +157,16 @@ def train(args):
         dataloader_num_workers=args.dataloader_num_workers,
         num_train_epochs=args.num_train_epochs,
         logging_dir=args.log_directory,
-        logging_steps=args.logging_steps,
+        logging_steps=args.logging_steps,   
         save_steps=args.save_steps,
         save_total_limit=args.save_total_limit,
-        gradient_accumulation_steps=args.gradient_accumulation_steps,
-        learning_rate=args.lr,
+        # gradient_accumulation_steps=args.gradient_accumulation_steps,
+        # learning_rate=args.lr,
         lr_scheduler_type='linear',
         warmup_steps=0,
         # lr_scheduler_step_size=args.lr_scheduler_step_size,
         # lr_scheduler_decay_power=args.lr_scheduler_gamma,
-        weight_decay=args.weight_decay,
+        # weight_decay=args.weight_decay,
         predict_with_generate=True,
         overwrite_output_dir=True,
     )
@@ -170,11 +175,11 @@ def train(args):
     trainer = Seq2SeqTrainer(
         model=model,
         args=training_args,
-        # tokenizer=tokenizer,
+        tokenizer=tokenizer,
         data_collator=default_data_collator,  # You can define your own data collator if needed
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
-        compute_metrics=None,  # You can define your own evaluation metrics function if needed
+        compute_metrics=compute_bleu,  # You can define your own evaluation metrics function if needed
     )
 
     # Train the model

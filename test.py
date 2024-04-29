@@ -1,6 +1,6 @@
 import argparse
 import torch
-import datasets
+import my_datasets
 import matplotlib.pyplot as plt
 import random
 import os
@@ -56,7 +56,7 @@ def load_test_set(args):
     tokenizer = get_tokenizer(args)
     tokenizer = update_tokenizer(tokenizer, args)
 
-    test_dataset = datasets.FlickrDataset(args.data_dir, split="test", image_processor=image_processor)
+    test_dataset = my_datasets.FlickrDataset(args.data_dir, split="test", image_processor=image_processor)
     return test_dataset
 
 def load_model(args):
@@ -64,7 +64,7 @@ def load_model(args):
     model = VisionEncoderDecoderModel.from_pretrained(args.experiment_path)
     return model
 
-def generate_predictions(model, test_dataset, num_samples=5):
+def generate_predictions(model, test_dataset, num_samples=10):
     # Generate captions for a random sample of test set images
     samples = random.sample(range(len(test_dataset)), num_samples)
     captions = []
@@ -87,8 +87,8 @@ def generate_predictions(model, test_dataset, num_samples=5):
 
 def visualize_samples(samples, args):
     # Visualize sample images with their actual and generated captions
-    fig, axes = plt.subplots(nrows=len(samples), ncols=1, figsize=(8, 12))
-
+    fig, axes = plt.subplots(nrows=len(samples)//2, ncols=2, figsize=(15, 12))
+    axes = axes.flatten()
     for i, sample in enumerate(samples):
         image = sample['image']
         actual_caption = sample['actual_caption']

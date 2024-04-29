@@ -20,7 +20,7 @@ cd i2c
 python main.py \
     --data_dir "/scratch/rksing18/datasets/Flickr8" \
     --output_directory "/scratch/rksing18/i2c/Model-Runs/" \
-    --experiment_name "gpt-8k-5-0.0003" \
+    --experiment_name "gpt-8k-5-default" \
     --encoder "facebook/dinov2-small" \
     --decoder "openai-community/gpt2" \
     --device "gpu" \
@@ -30,10 +30,11 @@ python main.py \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 16 \
     --dataloader_num_workers 16 \
-    --num_train_epochs 10 \
+    --num_train_epochs 5 \
     --logging_steps 50 \
     --save_steps 50 \
     --save_total_limit 2 \
-    --gradient_accumulation_steps 4 \
-    --weight_decay 0.01 \
+    --gradient_accumulation_steps 2 \
+    --weight_decay 0.03 \
+    --resume
     
